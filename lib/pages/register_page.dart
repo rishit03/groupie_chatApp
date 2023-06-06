@@ -1,21 +1,20 @@
-import 'dart:math';
-
-import 'package:chat_app/pages/register_page.dart';
+import 'package:chat_app/pages/login_page.dart';
 import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterPageState extends State<RegisterPage> {
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
+  String fullName = "";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,29 +26,54 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget> [
+              children: <Widget>[
                 const Text("Groupie", style: TextStyle(
                   fontSize: 40,
                   fontWeight: FontWeight.bold,
                 )),
                 const SizedBox(height: 10),
-                const Text("Login now to see what they are talking!", style: TextStyle(
+                const Text(
+                    "Create your account now to chat and explore", style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 15,
                 )),
-                Image.asset("assets/login.png"),
+                Image.asset("assets/register.png"),
                 TextFormField(
                   decoration: textInputDecoration.copyWith(
-                    prefixIcon: const Icon(Icons.email, color: Color(0xFFee7b64)),
+                    prefixIcon: const Icon(
+                        Icons.person, color: Color(0xFFee7b64)),
+                    hintText: "Full Name",
+                  ),
+                  onChanged: (val) {
+                    setState(() {
+                      fullName = val;
+                    });
+                  },
+                  validator: (val){
+                    if(val!.isNotEmpty){
+                      return null;
+                    }
+                    else{
+                      return "Name cannot be empty";
+                    }
+                  },
+                ),
+                const SizedBox(height: 15),
+                TextFormField(
+                  decoration: textInputDecoration.copyWith(
+                    prefixIcon: const Icon(
+                        Icons.email, color: Color(0xFFee7b64)),
                     hintText: "Email",
                   ),
-                  onChanged: (val){
+                  onChanged: (val) {
                     setState(() {
                       email = val;
                     });
                   },
                   validator: (val) {
-                    return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val!)
+                    return RegExp(
+                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                        .hasMatch(val!)
                         ? null : "Please enter a valid email";
                   },
                 ),
@@ -60,16 +84,17 @@ class _LoginPageState extends State<LoginPage> {
                 TextFormField(
                   obscureText: true,
                   decoration: textInputDecoration.copyWith(
-                    prefixIcon: const Icon(Icons.lock, color: Color(0xFFee7b64)),
+                    prefixIcon: const Icon(
+                        Icons.lock, color: Color(0xFFee7b64)),
                     hintText: "Password",
                   ),
-                  onChanged: (val){
+                  onChanged: (val) {
                     setState(() {
                       password = val;
                     });
                   },
-                  validator: (val){
-                    if(val!.length<6){
+                  validator: (val) {
+                    if (val!.length < 6) {
                       return "Password must be at least 6 characters";
                     } else {
                       return null;
@@ -85,12 +110,14 @@ class _LoginPageState extends State<LoginPage> {
                     style: ElevatedButton.styleFrom(
                       primary: const Color(0xFFee7b64),
                       elevation: 1,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
                     ),
-                    onPressed: (){
-                      login();
+                    onPressed: () {
+                      register();
                     },
-                    child: const Text("Sign In", style: TextStyle(color: Colors.white, fontSize: 15)),
+                    child: const Text(
+                      "Register", style: TextStyle(color: Colors.white, fontSize: 15)),
                   ),
                 ),
                 const SizedBox(
@@ -98,17 +125,18 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Text.rich(
                   TextSpan(
-                    text: "Don't have an account? ",
+                    text: "Already have an account? ",
                     children: <TextSpan>[
                       TextSpan(
-                        text: "Register here",
-                        style: const TextStyle(
-                          color: Colors.black,
-                          decoration: TextDecoration.underline,
-                        ),
-                        recognizer: TapGestureRecognizer()..onTap = () {
-                          nextScreen(context, const RegisterPage());
-                        }
+                          text: "Login now",
+                          style: const TextStyle(
+                            color: Colors.black,
+                            decoration: TextDecoration.underline,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              nextScreen(context, const LoginPage());
+                            }
                       ),
                     ],
                     style: const TextStyle(color: Colors.black, fontSize: 14),
@@ -122,7 +150,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  login() {
+  register(){
     if (formKey.currentState!.validate()) {}
   }
+
 }
+
+
