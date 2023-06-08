@@ -1,4 +1,7 @@
+import 'package:chat_app/helper/helper_function.dart';
+import 'package:chat_app/pages/home_page.dart';
 import 'package:chat_app/pages/login_page.dart';
+import 'package:chat_app/service/auth_service.dart';
 import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -11,16 +14,18 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  bool _isLoading = false;
   final formKey = GlobalKey<FormState>();
   String email = "";
   String password = "";
   String fullName = "";
+  AuthService authService = AuthService();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Form(
         key: formKey,
-        child: SingleChildScrollView(
+        child: _isLoading? const Center(child: CircularProgressIndicator(color: Color(0xFFee7b64),)): SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
             child: Column(
@@ -150,8 +155,28 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  register(){
-    if (formKey.currentState!.validate()) {}
+  register() async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+      await authService.registerUserWithEmailAndPassword(fullName, email, password).then((value) async {
+        if(value == true){
+          // saving the shared preference state
+          await HelperFunctions.saveUserLoginStatus(true);
+          await HelperFunctions.saveUserEmailSF(email);
+          await HelperFunctions.saveUserNameSF(fullName);
+          nextScreenReplace(context, const HomePage());
+
+        }
+        else{
+          showSnackBar(context, Colors.red, value);
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      });
+    }
   }
 
 }
